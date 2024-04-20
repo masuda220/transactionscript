@@ -1,4 +1,4 @@
-# トランザクションスクリプトアプリケーションをサクっと書くためのテンプレートの検討
+# トランザクションスクリプトアプリケーションをサクっと書くためのJava/Spring Bootテンプレートの検討
 
 ## 主題
 
@@ -58,17 +58,74 @@ Java/Spring Bootプロジェクトの参照コード（案）
 
 - 氏名
 - 連絡先(電子メール、電話番号)
--  
+- 送付先(郵便番号、住所）
+
+サンプルデータ（テストデータ）は、テストデータ生成サービスなどを使って現実的なデータにすること
+
 ### 機能
 
 #### 第一形態
 
-最少機能
+- 最少機能
 
 ```mermaid
 flowchart LR
 
-user
+user{{利用者}}
+registerSelf([基本情報を登録する])
+database[(データベース)]
+
+user --> registerSelf --> database
 ```
 
-####
+#### 第二形態
+
+- 利用者のセルフサービス全機能（登録、送付先の変更、削除）
+- ユーザー認証（ID=メールアドレス、パスワード=固定、ハッシュ化）
+- メールでイベント発生を通知（固定文面、疑似）
+
+```mermaid
+flowchart LR
+
+user{{利用者}}
+
+registerSelf([基本情報を登録する])
+updateSelf([送付先を変更する])
+deleteSelf([登録内容を削除する])
+notificationSelf([通知する])
+
+database[(データベース)]
+
+user --> registerSelf --> database
+user --> updateSelf --> database
+user --> deleteSelf --> database
+registerSelf --> notificationSelf
+updateSelf --> notificationSelf
+deleteSelf --> notificationSelf
+```
+
+#### 第三形態
+
+- 管理者機能を追加する
+
+```mermaid
+flowchart LR
+
+admin{{管理者}}
+
+register([基本情報を登録する])
+updateContactInfo([連絡先を変更する])
+updateShipTo([送付先を変更する])
+resetPassword([パスワードをリセットする])
+delete([登録内容を削除する])
+
+database[(データベース)]
+
+admin --> register --> database
+admin --> updateContactInfo --> database
+admin --> updateShipTo --> database
+admin --> resetPassword --> database
+admin --> delete --> database
+```
+
+
